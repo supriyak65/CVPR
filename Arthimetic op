@@ -1,0 +1,44 @@
+import cv2
+import numpy as np
+def arithmetic_operations(image1_path, image2_path): 
+# Load images
+image1 = cv2.imread(image1_path) 
+image2 = cv2.imread(image2_path)
+# Check if images are loaded correctly 
+if image1 is None or image2 is None:
+print("Error: One or both images not found. Check file paths.") 
+return
+# Resize image2 to match image1's dimensions
+image2 = cv2.resize(image2, (image1.shape[1], image1.shape[0]))
+# Perform arithmetic operations 
+add_result = cv2.add(image1, image2)
+subtract_result = cv2.subtract(image1, image2) 
+multiply_result = cv2.multiply(image1, image2)
+# Convert images to float32 for division to avoid divide-by-zero errors 
+image1_float = image1.astype(np.float32)
+image2_float = np.where(image2 == 0, 1, image2).astype(np.float32) # Avoid division by zero 
+divide_result = cv2.divide(image1_float, image2_float)
+# Convert division result back to uint8 for display 
+divide_result = np.clip(divide_result, 0, 255).astype(np.uint8)
+# Resize results for better display 
+display_size = (300, 300)
+image1_resized = cv2.resize(image1, display_size) 
+image2_resized = cv2.resize(image2, display_size) 
+add_resized = cv2.resize(add_result, display_size) 
+subtract_resized = cv2.resize(subtract_result, display_size) 
+multiply_resized = cv2.resize(multiply_result, display_size) 
+divide_resized = cv2.resize(divide_result, display_size)
+# Show results
+cv2.imshow('Image 1', image1_resized)
+cv2.imshow('Image 2', image2_resized) 
+cv2.imshow('Addition', add_resized) 
+cv2.imshow('Subtraction', subtract_resized) 
+cv2.imshow('Multiplication', multiply_resized) 
+cv2.imshow('Division', divide_resized) 
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+# Paths to images (Update with actual file paths)
+image1_path = 'm1.jpeg' # Replace with your first image file
+image2_path = 'm2.jpg' # Replace with your second image file
+# Run the function 
+arithmetic_operations(image1_path, image2_path)
