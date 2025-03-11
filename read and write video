@@ -1,0 +1,24 @@
+import cv2
+cap = cv2.VideoCapture("input_video.mp4") 
+if not cap.isOpened():
+print("Error: Could not open the video file.") 
+exit()
+output = cv2.VideoWriter(
+"output.avi", cv2.VideoWriter_fourcc(*'XVID'), 10, (500, 500)) 
+while True:
+ret, frame = cap.read() 
+if not ret:
+print("Error: Failed to capture frame.") 
+break
+frame = cv2.resize(frame, (500, 500))
+cv2.rectangle(frame, (50, 50), (100, 100), (0, 255, 0), 3)
+center = (250, 250)
+radius = 50
+cv2.circle(frame, center, radius, (0, 0, 255), 3) 
+output.write(frame)
+cv2.imshow("output", frame)
+if cv2.waitKey(1) & 0xFF == ord('s'): 
+break
+cv2.destroyAllWindows() 
+output.release() 
+cap.release()
