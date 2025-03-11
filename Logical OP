@@ -1,0 +1,36 @@
+import cv2
+import numpy as np
+def logical_operations(image1_path, image2_path): 
+# Load images in grayscale mode
+image1 = cv2.imread(image1_path, cv2.IMREAD_GRAYSCALE) 
+image2 = cv2.imread(image2_path, cv2.IMREAD_GRAYSCALE)
+# Check if images are loaded correctly 
+if image1 is None or image2 is None:
+print("Error: One or both images not found. Check file paths.") 
+return
+# Resize images to 200x200 for consistency 
+image1 = cv2.resize(image1, (200, 200))
+image2 = cv2.resize(image2, (200, 200)) 
+# Perform logical operations
+and_result = cv2.bitwise_and(image1, image2) # AND operation 
+or_result = cv2.bitwise_or(image1, image2) # OR operation
+xor_result = cv2.bitwise_xor(image1, image2) # XOR operation 
+not_result1 = cv2.bitwise_not(image1) # NOT operation on image1 
+not_result2 = cv2.bitwise_not(image2) # NOT operation on image2 
+# Show original images
+cv2.imshow('Image 1', image1)
+cv2.imshow('Image 2', image2)
+# Show results of logical operations 
+cv2.imshow('AND Operation', and_result) 
+cv2.imshow('OR Operation', or_result) 
+cv2.imshow('XOR Operation', xor_result) 
+cv2.imshow('NOT Image 1', not_result1) 
+cv2.imshow('NOT Image 2', not_result2)
+# Wait for user to press a key and close windows 
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+# Paths to images (Update with actual file paths)
+image1_path = 'm1.jpeg' # Replace with your first image file
+image2_path = 'm2.jpg' # Replace with your second image file 
+# Run the function
+logical_operations(image1_path, image2_path)
