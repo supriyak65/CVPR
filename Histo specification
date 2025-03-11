@@ -1,0 +1,70 @@
+import cv2
+import numpy as np
+import matplotlib.pyplot as plt
+def hist_match(source, reference): 
+"""
+Matches the histogram of the source image to that of the reference image. 
+Works on each color channel separately (R, G, B).
+"""
+matched = source.copy() # Copy source image to apply changes
+for i in range(3): # Loop through each color channel (R, G, B)
+# Compute histogram for source and reference images 
+src_hist, _ = np.histogram(source[:, :, i].ravel(), 256, [0, 256])
+ref_hist, _ = np.histogram(reference[:, :, i].ravel(), 256, [0, 256])
+# Compute cumulative distribution functions (CDFs) 
+src_cdf = np.cumsum(src_hist) / src_hist.sum() 
+ref_cdf = np.cumsum(ref_hist) / ref_hist.sum()
+# Create a mapping from source to reference
+mapping = np.interp(src_cdf, ref_cdf, np.arange(256))
+# Apply the mapping to transform the pixel values
+matched[:, :, i] = np.interp(source[:, :, i], np.arange(256), mapping) 
+return np.uint8(matched) # Convert back to uint8 format
+# Load source and reference images
+src = cv2.imread('a1.webp') # Read source image 
+ref = cv2.imread('a2.png') # Read reference image
+# Check if images are loaded correctly 
+if src is None or ref is None:
+print("Error: Image not found. Check file paths.") 
+else:
+# Convert images from BGR (OpenCV default) to RGB (for displaying correctly) 
+src = cv2.cvtColor(src, cv2.COLOR_BGR2RGB)
+ref = cv2.cvtColor(ref, cv2.COLOR_BGR2RGB)
+# Perform histogram matching 
+matched = hist_match(src, ref)
+# Display images side by side 
+images = [src, ref, matched]
+import cv2
+import numpy as np
+import matplotlib.pyplot as plt
+def hist_match(source, reference): 
+"""
+Matches the histogram of the source image to that of the reference image. 
+Works on each color channel separately (R, G, B).
+"""
+matched = source.copy() # Copy source image to apply changes
+for i in range(3): # Loop through each color channel (R, G, B)
+# Compute histogram for source and reference images 
+src_hist, _ = np.histogram(source[:, :, i].ravel(), 256, [0, 256])
+ref_hist, _ = np.histogram(reference[:, :, i].ravel(), 256, [0, 256])
+# Compute cumulative distribution functions (CDFs) 
+src_cdf = np.cumsum(src_hist) / src_hist.sum() 
+ref_cdf = np.cumsum(ref_hist) / ref_hist.sum()
+# Create a mapping from source to reference
+mapping = np.interp(src_cdf, ref_cdf, np.arange(256))
+# Apply the mapping to transform the pixel values
+matched[:, :, i] = np.interp(source[:, :, i], np.arange(256), mapping) 
+return np.uint8(matched) # Convert back to uint8 format
+# Load source and reference images
+src = cv2.imread('a1.webp') # Read source image 
+ref = cv2.imread('a2.png') # Read reference image
+# Check if images are loaded correctly 
+if src is None or ref is None:
+print("Error: Image not found. Check file paths.") 
+else:
+# Convert images from BGR (OpenCV default) to RGB (for displaying correctly) 
+src = cv2.cvtColor(src, cv2.COLOR_BGR2RGB)
+ref = cv2.cvtColor(ref, cv2.COLOR_BGR2RGB)
+# Perform histogram matching 
+matched = hist_match(src, ref)
+# Display images side by side 
+images = [src, ref, matched]
