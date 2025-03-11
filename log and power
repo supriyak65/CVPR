@@ -1,0 +1,29 @@
+import cv2
+import numpy as np
+import matplotlib.pyplot as plt 
+# Load the image in grayscale
+image = cv2.imread("mango.jpeg", cv2.IMREAD_GRAYSCALE) 
+# Check if the image is loaded correctly
+if image is None:
+print("Error: Image not found or cannot be loaded.") 
+else:
+# Avoid division by zero by adding a small constant (epsilon) 
+epsilon = 1e-5 # Small constant to prevent log(0) issues
+# 2. Log Transformation (s = c * log(1 + r))
+c = 255 / np.log(1 + np.max(image) + epsilon) # Compute constant safely
+log_transformed = c * np.log(1 + image.astype(np.float32) + epsilon) # Apply log function 
+log_transformed = np.uint8(log_transformed) # Convert back to uint8
+# 3. Power Law (Gamma) Transformation (s = c * r^γ) 
+gamma = 2.2 # Adjust brightness
+gamma_transformed = np.array(255 * ((image / 255 + epsilon) ** gamma), dtype=np.uint8) 
+# Display the images
+titles = ['Original', 'Log Transform', 'Power Law (Gamma)'] 
+images = [image, log_transformed, gamma_transformed] 
+plt.figure(figsize=(10, 6))
+for i in range(3): 
+plt.subplot(1, 3, i + 1)
+plt.imshow(images[i], cmap='gray') 
+plt.title(titles[i])
+plt.axis('off') 
+plt.tight_layout() 
+plt.show()
