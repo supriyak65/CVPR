@@ -1,0 +1,39 @@
+import cv2
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Load the image in grayscale
+image = cv2.imread('image.png', cv2.IMREAD_GRAYSCALE)
+
+# Step 1: Apply Gaussian Blur
+sigma = 2
+blurred = cv2.GaussianBlur(image, (5, 5), sigma)
+
+# Step 2: Apply Laplacian
+laplacian = cv2.Laplacian(blurred, cv2.CV_64F)
+
+# Step 3: Detect Zero-Crossings
+zero_crossing = np.zeros_like(laplacian, dtype=np.uint8)
+rows, cols = laplacian.shape
+for i in range(1, rows - 1):
+    for j in range(1, cols - 1):
+        patch = laplacian[i - 1:i + 2, j - 1:j + 2]
+        if patch.min() < 0 and patch.max() > 0:
+            zero_crossing[i, j] = 255
+
+# Step 4: Marr-Hildreth Edge Image (Final Edge Map)
+marr_hildreth_edges = zero_crossing.copy()
+
+# Display results
+titles = ["Original Image", "Gaussian Blurred", "Laplacian", "Zero-Crossing (Edges)", "Marr-Hildreth Edge Image"]
+images = [image, blurred, np.uint8(np.absolute(laplacian)), zero_crossing, marr_hildreth_edges]
+
+plt.figure(figsize=(15, 6))
+for i in range(5):
+    plt.subplot(1, 5, i + 1)
+    plt.imshow(images[i], cmap='gray')
+    plt.title(titles[i])
+    plt.axis('off')
+
+plt.tight_layout()
+plt.show()
