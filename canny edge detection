@@ -1,0 +1,58 @@
+import cv2
+import numpy as np
+import matplotlib.pyplot as plt
+# Load the image
+image_path = 'image.jpg' # Change this to your image file path
+image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
+# Ensure the image is loaded correctly
+if image is None:
+    print("Error: Image not found!")
+    exit()
+# Apply Canny edge detection
+edges_canny = cv2.Canny(image, 100, 200)
+# Apply Prewitt edge detection (using convolution with Prewitt kernels)
+prewitt_kernel_x = np.array([[ -1, 0, 1],
+[ -1, 0, 1],
+[ -1, 0, 1]])
+prewitt_kernel_y = np.array([[ -1, -1, -1],
+[ 0, 0, 0],
+[ 1, 1, 1]])
+# Convert to float32 or float64 to avoid type issues
+edges_prewitt_x = cv2.filter2D(image, -1, prewitt_kernel_x).astype(np.float64)
+edges_prewitt_y = cv2.filter2D(image, -1, prewitt_kernel_y).astype(np.float64)
+# Calculate the gradient magnitude
+edges_prewitt = cv2.magnitude(edges_prewitt_x, edges_prewitt_y)
+# Apply Sobel edge detection (Sobel operator)
+edges_sobel_x = cv2.Sobel(image, cv2.CV_64F, 1, 0, ksize=3)
+edges_sobel_y = cv2.Sobel(image, cv2.CV_64F, 0, 1, ksize=3)
+edges_sobel = cv2.magnitude(edges_sobel_x, edges_sobel_y)
+edges_laplacian = cv2.Laplacian(image, cv2.CV_64F)
+edges_laplacian = cv2.convertScaleAbs(edges_laplacian) # Convert to uint8 for displaying
+# Plot the results
+plt.figure(figsize=(20, 10))
+# Original Image
+plt.subplot(2, 3, 1)
+plt.imshow(image, cmap='gray')
+plt.title('Original Image')
+plt.axis('off')
+# Canny Edge Detection
+plt.subplot(2, 3, 2)
+plt.imshow(edges_canny, cmap='gray')
+plt.title('Canny Edge Detection')
+plt.axis('off')
+# Prewitt Edge Detection
+plt.subplot(2, 3, 3)
+plt.imshow(edges_prewitt, cmap='gray')
+plt.title('Prewitt Edge Detection')
+plt.axis('off')
+# Sobel Edge Detection
+plt.subplot(2, 3, 4)
+plt.imshow(edges_sobel, cmap='gray')
+plt.title('Sobel Edge Detection')
+plt.axis('off')
+# Laplacian Edge Detection
+plt.subplot(2, 3, 5)
+plt.imshow(edges_laplacian, cmap='gray')
+plt.title('Laplacian Edge Detection')
+plt.axis('off')
+plt.show()
