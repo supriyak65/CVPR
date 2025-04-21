@@ -1,0 +1,18 @@
+import cv2
+import numpy as np
+
+
+img = cv2.imread('image.jpg') 
+original_shape = img.shape
+data = np.float32(img.reshape(-1, 1))
+mean, eigenvectors = cv2.PCACompute(data, mean=None, maxComponents=1)
+ 
+ 
+projected = cv2.PCAProject(data, mean, eigenvectors)
+reconstructed = cv2.PCABackProject(projected, mean, eigenvectors) 
+reconstructed_img = reconstructed.reshape(original_shape)
+
+cv2.imshow("Original",img) 
+cv2.imshow("PCA",reconstructed_img) 
+cv2.waitKey(0) 
+cv2.destroyAllWindows()
