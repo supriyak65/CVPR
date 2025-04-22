@@ -1,0 +1,43 @@
+import matplotlib.pyplot as plt
+from sklearn import datasets, metrics
+from sklearn.model_selection import train_test_split from
+sklearn.naive_bayes import GaussianNB
+from sklearn.preprocessing import StandardScaler from
+skimage.transform import resize
+# Load the digits dataset digits =
+datasets.load_digits()
+X, y = digits.data, digits.target
+images = digits.images # Original images shaped (n_samples, 8, 8)
+# Resize the images to 16x16
+n_samples = len(images)
+images_resized = [resize(image, (16, 16), anti_aliasing=True) for image in images]
+images_resized = [image.flatten() for image in images_resized] # Flatten the images for the model
+# Split dataset
+X_train, X_test, y_train, y_test, images_train, images_test = train_test_split( images_resized, y, images,
+test_size=0.25, random_state=42)
+# Standardize the features (scaling to mean=0, std=1) scaler =
+StandardScaler()
+X_train = scaler.fit_transform(X_train) X_test
+= scaler.transform(X_test)
+# Train Naive Bayes model model =
+GaussianNB() model.fit(X_train,
+y_train)
+# Predict test set
+y_pred = model.predict(X_test)
+# Accuracy
+accuracy = metrics.accuracy_score(y_test, y_pred) * 100 print(f"Accuracy:
+{accuracy:.2f}%")
+# Show original training images (top) and test images with predictions (bottom) n_images = 10
+fig, axes = plt.subplots(2, n_images, figsize=(12, 4))
+# Top row: original training images for i in
+range(n_images):
+axes[0, i].imshow(images_train[i], cmap='gray') axes[0,
+i].set_title(f"Train: {y_train[i]}") axes[0, i].axis('off')
+# Bottom row: test images with predicted and true labels for i in
+range(n_images):
+axes[1, i].imshow(images_test[i], cmap='gray') axes[1,
+i].set_title(f"P:{y_pred[i]} / T:{y_test[i]}") axes[1,
+i].axis('off')
+plt.suptitle("Top: Original Training Images | Bottom: Test Images with Predictions", fontsize=12)
+plt.tight_layout()
+plt.show()
